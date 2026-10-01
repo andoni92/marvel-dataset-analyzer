@@ -297,7 +297,7 @@ una propuesta para separar responsabilidades y facilitar la integración.
 Se puede modificar si el grupo justifica otra organización.
 
 ``` text
-marvel_pipeline/
+marvel-dataset-analyzer/
 ├── main.py
 ├── cargador.py
 ├── limpiador.py
