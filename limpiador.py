@@ -5,8 +5,18 @@ class Limpiador:
         pass
 #Rellena los vacios de las columnas de texto con "Desconocido"; las numericas se quedan como NaN
     def limpiar_vacias(self, df: pd.DataFrame):
-        columnas_texto = ['ID', 'ALIGN', 'EYE', 'HAIR', 'SEX', 'GSM', 'ALIVE', 'FIRST APPEARANCE']
-        return df.fillna({columna: 'Desconocido' for columna in columnas_texto})
+        columnas_texto = []
+        columnas_numericas = []
+        for u in df.columns:
+            if pd.api.types.is_string_dtype(df[u]):
+                columnas_texto.append(u)
+            if pd.api.types.is_numeric_dtype(df[u]):
+                columnas_numericas.append(u)
+        df[columnas_texto] = df[columnas_texto].fillna('Desconocido')
+        
+        df[columnas_numericas]= df[columnas_numericas].fillna(0)
+        return df
+        
 
 #Limpia los caracteres especiales de las columnas de texto y convierte las columnas numericas a enteros
     def limpiar_tuplas(self, df: pd.DataFrame):
