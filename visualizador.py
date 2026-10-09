@@ -1,0 +1,1 @@
+# Creación y guardado de gráficos
