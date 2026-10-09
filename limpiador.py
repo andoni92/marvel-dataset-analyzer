@@ -3,24 +3,23 @@ import pandas as pd
 class Limpiador:
     def __init__(self):
         pass
-    #Rellena los vacios de las columnas de texto con "Desconocido"; las numericas se quedan como NaN
+#Rellena los vacios de las columnas de texto con "Desconocido"; las numericas se quedan como NaN
     def limpiar_vacias(self, df: pd.DataFrame):
         columnas_texto = ['ID', 'ALIGN', 'EYE', 'HAIR', 'SEX', 'GSM', 'ALIVE', 'FIRST APPEARANCE']
         return df.fillna({columna: 'Desconocido' for columna in columnas_texto})
 
-    def limpiar_strings(df: pd.DataFrame):
+#Limpia los caracteres especiales de las columnas de texto y convierte las columnas numericas a enteros
+    def limpiar_tuplas(self, df: pd.DataFrame):
         columnas= df.columns
         for u in columnas:
-            if df[u].dtype=='string':
-                for indice , valor in df[u].items():
-                    df.loc[indice,u]= str(valor).replace(r'[^a-zA-ZñÑ()-]','',regex=True)
-            if df[u].dtype == 'float64' or df[u].dtype == 'float32':
-                for indice, valor in df[u].items():
-                    df.loc[indice,u]= int(valor)
+            if pd.api.types.is_string_dtype(df[u]):
+                df[u] = df[u].astype(str).str.replace(r'[^a-zA-ZñÑ()-]', '', regex=True)
+            if pd.api.types.is_numeric_dtype(df[u]):
+                df[u] = df[u].astype('Int64')
         return df
-
-    def normalizar_columnas(df: pd.DataFrame):
-        df.columns.str.strip().str.replace(' ','_').str.replace(r'[^a-zA-ZñÑ]','',regex=True).str.lower()
+#Normaliza los nombres de las columnas
+    def normalizar_columnas(self, df: pd.DataFrame):
+        df.columns = df.columns.str.strip().str.replace(' ','_').str.replace(r'[^a-zA-ZñÑ_0-9]','',regex=True).str.lower()
         return df
 
 

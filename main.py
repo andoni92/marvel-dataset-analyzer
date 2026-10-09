@@ -8,7 +8,7 @@ def main():
     limpiador = Limpiador()
     df=df.cargar()
     df=limpiador.limpiar_vacias(df)
-    df=limpiador.limpiar_strings(df)
+    df=limpiador.limpiar_tuplas(df)
     df=limpiador.normalizar_columnas(df)
     
     print(df.head())
