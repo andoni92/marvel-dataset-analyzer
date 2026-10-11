@@ -7,9 +7,7 @@ def main():
     df = Cargador("grupo01_marvel_comics.csv")
     limpiador = Limpiador()
     df=df.cargar()
-    df=limpiador.limpiar_vacias(df)
-    df=limpiador.limpiar_tuplas(df)
-    df=limpiador.normalizar_columnas(df)
+    df=limpiador.limpiar(df)
     
     print(df.head())
 
