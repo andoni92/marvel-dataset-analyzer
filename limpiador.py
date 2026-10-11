@@ -9,7 +9,7 @@ class Limpiador:
         for u in df.columns:
             if pd.api.types.is_string_dtype(df[u]):
                 columnas_texto.append(u)    
-          df[columnas_texto] = df[columnas_texto].fillna('Desconocido')
+            df[columnas_texto] = df[columnas_texto].fillna('Desconocido')
         return df
         
 
