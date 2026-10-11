@@ -32,5 +32,30 @@ class Limpiador:
         df.columns = df.columns.str.strip().str.replace(' ','_').str.replace(r'[^a-zA-ZñÑ_0-9]','',regex=True).str.lower()
         return df
 
+    def decodificar_nombres(self, df: pd.DataFrame):
+        tiene_codigo = df['name'].str.contains('\\u', regex=False)
+        indices = df.index[tiene_codigo]
+
+        for i in indices:
+            texto = df.at[i, 'name']
+            posicion = texto.find('\\u')
+
+            while posicion != -1:
+                codigo = texto[posicion + 2 : posicion + 6]
+                letra = chr(int(codigo, 16))
+                texto = texto[:posicion] + letra + texto[posicion + 6:]
+                posicion = texto.find('\\u')
+
+            df.at[i, 'name'] = texto
+
+        df['name'] = df['name'].str.replace('\\"', '"', regex=False)
+        return df
+
+    def limpiar(self, df: pd.DataFrame):
+        df = self.decodificar_nombres(df)
+        df = self.normalizar_columnas(df)
+        df = self.limpiar_vacias(df)
+        df = self.limpiar_tuplas(df)
+        return df
 
             
