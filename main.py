@@ -5,12 +5,15 @@ from limpiador import Limpiador
 from analizador import AnalizadorMarvel
 from visualizador import VisualizadorMarvel
 from excepciones import DatasetInvalidoError, ColumnaInexistenteError
+from utilidades import imprimir_informe
 
 
 def main(ruta: str = "grupo01_marvel_comics.csv"):
     try:
         df = Cargador(ruta).cargar()
-        df = Limpiador().limpiar(df)
+        limpiador = Limpiador()
+        df = limpiador.limpiar(df)
+        imprimir_informe(limpiador.informe)
         resultados = AnalizadorMarvel(df).analizar()
 
         visualizador = VisualizadorMarvel()

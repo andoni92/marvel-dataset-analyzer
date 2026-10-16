@@ -1,8 +1,23 @@
 # Limpieza y transformación
 import pandas as pd
+from utilidades import resumen_calidad
+
+
 class Limpiador:
     def __init__(self):
-        pass
+        self.__informe = {}
+
+    @property
+    def informe(self) -> dict:
+        return self.__informe
+
+    def eliminar_duplicados(self, df: pd.DataFrame):
+        filas_antes = len(df)
+        df = df.drop_duplicates()
+        df = df.drop_duplicates(subset=['page_id'])
+        self.__informe['duplicados_eliminados'] = filas_antes - len(df)
+        return df
+
 #Rellena los vacios de las columnas de texto con "Desconocido"; las numericas se quedan como NaN
     def limpiar_vacias(self, df: pd.DataFrame):
         columnas_texto = []
@@ -69,10 +84,14 @@ class Limpiador:
 
     def limpiar(self, df: pd.DataFrame):
         df = df.copy()
-        df = self.decodificar_nombres(df)
-        df = self.normalizar_columnas(df)
-        df = self.normalizar_categorias(df)
-        df = self.limpiar_vacias(df)
-        df = self.limpiar_tuplas(df)
-        df = self.convertir_fecha(df)
+        self.__informe = {'antes': resumen_calidad(df), 'transformaciones': []}
+
+        pasos = [self.eliminar_duplicados, self.decodificar_nombres, self.normalizar_columnas,
+                 self.normalizar_categorias, self.limpiar_vacias, self.limpiar_tuplas,
+                 self.convertir_fecha]
+        for paso in pasos:
+            df = paso(df)
+            self.__informe['transformaciones'].append(paso.__name__)
+
+        self.__informe['despues'] = resumen_calidad(df)
         return df

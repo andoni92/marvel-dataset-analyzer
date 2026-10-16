@@ -62,9 +62,27 @@ class AnalizadorMarvel(AnalizadorBase):
             .sort_values(ascending=False)
         )
 
+    def porcentaje_alineamiento(self) -> pd.Series:
+        conteo = self.distribucion_alineamiento()
+        valores = conteo.to_numpy()
+        return pd.Series(np.round(valores / np.sum(valores) * 100, 2), index=conteo.index)
+
+    def estadisticas_apariciones(self) -> dict:
+        self.validar_columnas("appearances")
+        valores = self.datos["appearances"].dropna().to_numpy(dtype=float)
+        return {
+            "media": np.mean(valores),
+            "mediana": np.median(valores),
+            "desviacion": np.std(valores),
+            "percentil_90": np.percentile(valores, 90),
+            "maximo": np.max(valores),
+        }
+
     def analizar(self, n_top: int = 10) -> dict:
         return {
             "alineamiento": self.distribucion_alineamiento(),
+            "porcentaje_alineamiento": self.porcentaje_alineamiento(),
+            "estadisticas_apariciones": self.estadisticas_apariciones(),
             "evolucion": self.evolucion_primeras_apariciones(),
             "top": self.top_personajes_apariciones(n_top),
             "apariciones_alineamiento": self.apariciones_por_alineamiento(),
