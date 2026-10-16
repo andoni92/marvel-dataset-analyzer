@@ -18,9 +18,7 @@ class AnalizadorBase:
     def validar_columnas(self, *columnas: str) -> None:
         columnas_faltantes = [col for col in columnas if col not in self._df.columns]
         if columnas_faltantes:
-            raise ColumnaInexistenteError(
-                f"Las siguientes columnas no existen en el dataset: {columnas_faltantes}"
-            )
+            raise ColumnaInexistenteError(columnas_faltantes)
     
     def filtrar(self, **condiciones) -> pd.DataFrame:
         df_filtrado = self._df
@@ -63,12 +61,21 @@ class AnalizadorMarvel(AnalizadorBase):
             .mean()
             .sort_values(ascending=False)
         )
+
+    def analizar(self, n_top: int = 10) -> dict:
+        return {
+            "alineamiento": self.distribucion_alineamiento(),
+            "evolucion": self.evolucion_primeras_apariciones(),
+            "top": self.top_personajes_apariciones(n_top),
+            "apariciones_alineamiento": self.apariciones_por_alineamiento(),
+        }
     
     
 if __name__ == "__main__":
-    # Prueba autónoma con el CSV original
-    df_raw = pd.read_csv("grupo01_marvel_comics.csv")
-    analizador = AnalizadorMarvel(df_raw)
+    from cargador import Cargador
+    from limpiador import Limpiador
+    df = Limpiador().limpiar(Cargador("grupo01_marvel_comics.csv").cargar())
+    analizador = AnalizadorMarvel(df)
     print("--- Distribución Alineamiento ---")
     print(analizador.distribucion_alineamiento())
     print("\n--- Top 5 Personajes ---")

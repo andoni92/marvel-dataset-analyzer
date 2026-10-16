@@ -8,8 +8,8 @@ class Limpiador:
         columnas_texto = []
         for u in df.columns:
             if pd.api.types.is_string_dtype(df[u]):
-                columnas_texto.append(u)    
-            df[columnas_texto] = df[columnas_texto].fillna('Desconocido')
+                columnas_texto.append(u)
+        df[columnas_texto] = df[columnas_texto].fillna('Desconocido')
         return df
         
 
@@ -68,6 +68,7 @@ class Limpiador:
         return df
 
     def limpiar(self, df: pd.DataFrame):
+        df = df.copy()
         df = self.decodificar_nombres(df)
         df = self.normalizar_columnas(df)
         df = self.normalizar_categorias(df)

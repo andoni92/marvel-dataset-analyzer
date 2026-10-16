@@ -56,14 +56,19 @@ class VisualizadorMarvel:
         plt.close(fig)
         return ruta
 
+    def generar_graficos(self, resultados: dict) -> list:
+        return [
+            self.grafico_alineamiento(resultados["alineamiento"]),
+            self.grafico_evolucion_anual(resultados["evolucion"]),
+            self.grafico_top_apariciones(resultados["top"]),
+        ]
+
 
 if __name__ == "__main__":
+    from cargador import Cargador
+    from limpiador import Limpiador
     from analizador import AnalizadorMarvel
-    df_raw = pd.read_csv("grupo01_marvel_comics.csv")
-    analizador = AnalizadorMarvel(df_raw)
+    df = Limpiador().limpiar(Cargador("grupo01_marvel_comics.csv").cargar())
     vis = VisualizadorMarvel()
-
-    vis.grafico_alineamiento(analizador.distribucion_alineamiento())
-    vis.grafico_evolucion_anual(analizador.evolucion_primeras_apariciones())
-    vis.grafico_top_apariciones(analizador.top_personajes_apariciones(10))
+    vis.generar_graficos(AnalizadorMarvel(df).analizar())
     print("Gráficos generados en la carpeta resultados/")
