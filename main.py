@@ -5,7 +5,7 @@ from limpiador import Limpiador
 from analizador import AnalizadorMarvel
 from visualizador import VisualizadorMarvel
 from excepciones import DatasetInvalidoError, ColumnaInexistenteError
-from utilidades import imprimir_informe
+from utilidades import imprimir_informe, imprimir_resultados
 
 
 def main(ruta: str = "grupo01_marvel_comics.csv"):
@@ -15,6 +15,7 @@ def main(ruta: str = "grupo01_marvel_comics.csv"):
         df = limpiador.limpiar(df)
         imprimir_informe(limpiador.informe)
         resultados = AnalizadorMarvel(df).analizar()
+        imprimir_resultados(resultados)
 
         visualizador = VisualizadorMarvel()
         visualizador.generar_graficos(resultados)
@@ -25,6 +26,9 @@ def main(ruta: str = "grupo01_marvel_comics.csv"):
 
     except ColumnaInexistenteError as error:
         print(f"Error durante el análisis: {error}")
+
+    except Exception as error:
+        print(f"Error inesperado: {type(error).__name__}: {error}")
 
     else:
         print("Pipeline ejecutado correctamente.")

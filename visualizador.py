@@ -6,12 +6,12 @@ import pandas as pd
 class VisualizadorMarvel:
     
     def __init__(self, carpeta_salida: str = "resultados"):
-        self._carpeta_salida = carpeta_salida
-        os.makedirs(self._carpeta_salida, exist_ok=True)
+        self.__carpeta_salida = carpeta_salida
+        os.makedirs(self.__carpeta_salida, exist_ok=True)
     
     @property
     def carpeta_salida(self) -> str:
-        return self._carpeta_salida
+        return self.__carpeta_salida
     
     def grafico_alineamiento(self, serie: pd.Series, nombre_archivo: str = "alineamiento.png") -> str:
         fig, ax = plt.subplots(figsize=(8, 5))
@@ -22,7 +22,7 @@ class VisualizadorMarvel:
         ax.tick_params(axis="x", rotation=15)
         plt.tight_layout()
     
-        ruta = os.path.join(self._carpeta_salida, nombre_archivo)
+        ruta = os.path.join(self.__carpeta_salida, nombre_archivo)
         fig.savefig(ruta, dpi=300)
         plt.close(fig)
         return ruta
@@ -36,7 +36,7 @@ class VisualizadorMarvel:
         ax.grid(True, linestyle="--", alpha=0.6)
         plt.tight_layout()
     
-        ruta = os.path.join(self._carpeta_salida, nombre_archivo)
+        ruta = os.path.join(self.__carpeta_salida, nombre_archivo)
         fig.savefig(ruta, dpi=300)
         plt.close(fig)
         return ruta
@@ -51,7 +51,34 @@ class VisualizadorMarvel:
         ax.set_ylabel("Personaje", fontsize=12)
         plt.tight_layout()
     
-        ruta = os.path.join(self._carpeta_salida, nombre_archivo)
+        ruta = os.path.join(self.__carpeta_salida, nombre_archivo)
+        fig.savefig(ruta, dpi=300)
+        plt.close(fig)
+        return ruta
+
+    def grafico_apariciones_alineamiento(self, serie: pd.Series, nombre_archivo: str = "apariciones_por_alineamiento.png") -> str:
+        fig, ax = plt.subplots(figsize=(8, 5))
+        ax.bar(serie.index, serie.values, color="#f4a261", edgecolor="black")
+        ax.set_title("Media de Apariciones por Alineamiento", fontsize=14, fontweight="bold")
+        ax.set_xlabel("Alineamiento", fontsize=12)
+        ax.set_ylabel("Apariciones Medias por Personaje", fontsize=12)
+        plt.tight_layout()
+
+        ruta = os.path.join(self.__carpeta_salida, nombre_archivo)
+        fig.savefig(ruta, dpi=300)
+        plt.close(fig)
+        return ruta
+
+    def grafico_vivos_alineamiento(self, serie: pd.Series, nombre_archivo: str = "vivos_por_alineamiento.png") -> str:
+        fig, ax = plt.subplots(figsize=(8, 5))
+        ax.bar(serie.index, serie.values, color="#6a4c93", edgecolor="black")
+        ax.set_title("Porcentaje de Personajes Vivos por Alineamiento", fontsize=14, fontweight="bold")
+        ax.set_xlabel("Alineamiento", fontsize=12)
+        ax.set_ylabel("Personajes Vivos (%)", fontsize=12)
+        ax.set_ylim(0, 100)
+        plt.tight_layout()
+
+        ruta = os.path.join(self.__carpeta_salida, nombre_archivo)
         fig.savefig(ruta, dpi=300)
         plt.close(fig)
         return ruta
@@ -61,6 +88,8 @@ class VisualizadorMarvel:
             self.grafico_alineamiento(resultados["alineamiento"]),
             self.grafico_evolucion_anual(resultados["evolucion"]),
             self.grafico_top_apariciones(resultados["top"]),
+            self.grafico_apariciones_alineamiento(resultados["apariciones_alineamiento"]),
+            self.grafico_vivos_alineamiento(resultados["vivos_alineamiento"]),
         ]
 
 
